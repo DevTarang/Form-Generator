@@ -26,7 +26,7 @@ const App = () => {
   const [thankYouTitleChange, setThankYouTitleChange] = useState(thankYouTitle)
   const [subTextChange, setSubTextChange] = useState(subText)
   const [subText2Change, setSubText2Change] = useState(subText2)
-  const [isOptRequired, setIsOtpRequired] = useState(false);
+  const [isOtpRequired, setIsOtpRequired] = useState(false);
 
   const [showPopup, setShowPopup] = useState(false);
 
@@ -166,7 +166,7 @@ const App = () => {
         }
     }).join('\n');
 
-    const scriptVal = isOptRequired ? `<script>
+    const scriptVal = isOtpRequired ? `<script>
       document.getElementById('submit-otp').addEventListener('click', async (event) => {
         event.preventDefault();
 
@@ -411,7 +411,7 @@ const App = () => {
             }
             .dropdown-icon {
                 position: absolute;
-                right: 10px;
+                right: 20px;
                 top: 50%;
                 transform: translateY(-50%);
             }
@@ -780,8 +780,16 @@ const App = () => {
       <div className='flex w-full'>
         <div className='left-panel max-w-[300px] items-center flex flex-col gap-[10px] '>
           <div className='flex flex-row justify-between items-center w-full'>
-            <button className='font-semibold border-2 w-3/5 border-[#363062] py-[10px] text-[#363062] hover:text-[#E9D5CA] hover:bg-[#827397] rounded-lg  ' onClick={handleWithOtp}>With OTP</button>
-            <button className='font-semibold border-2 w-3/5 border-[#363062] py-[10px] text-[#363062] hover:text-[#E9D5CA] hover:bg-[#827397] rounded-lg  ' onClick={handleWithoutOtp}>Without OTP </button>
+            <button className={`font-semibold border-2 w-3/5 py-[10px] rounded-lg ${
+                isOtpRequired
+                    ? 'bg-[#363062] text-[#E9D5CA] border-[#363062]'
+                    : 'bg-transparent text-[#363062] border-[#363062] hover:text-[#E9D5CA] hover:bg-[#827397]'
+                }`} onClick={handleWithOtp}>With OTP</button>
+            <button className={`font-semibold border-2 w-3/5 py-[10px] rounded-lg ${
+                !isOtpRequired
+                    ? 'bg-[#363062] text-[#E9D5CA] border-[#363062]'
+                    : 'bg-transparent text-[#363062] border-[#363062] hover:text-[#E9D5CA] hover:bg-[#827397]'
+                }`} onClick={handleWithoutOtp}>Without OTP </button>
           </div>
           <EditableFormHeadingComponent addComponent={addComponent}/>
           <EditableTextComponent addComponent={addComponent} />
