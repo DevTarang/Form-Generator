@@ -779,13 +779,13 @@ const App = () => {
       </div>
       <div className='flex w-full'>
         <div className='left-panel max-w-[300px] items-center flex flex-col gap-[10px] '>
-          <div className='flex flex-row justify-between items-center w-full'>
-            <button className={`font-semibold border-2 w-3/5 py-[10px] rounded-lg ${
+          <div className='flex flex-row justify-around items-center w-full gap-[10px]'>
+            <button className={`font-semibold border-2 w-3/5 py-[10px] rounded-lg m-auto ${
                 isOtpRequired
                     ? 'bg-[#363062] text-[#E9D5CA] border-[#363062]'
                     : 'bg-transparent text-[#363062] border-[#363062] hover:text-[#E9D5CA] hover:bg-[#827397]'
                 }`} onClick={handleWithOtp}>With OTP</button>
-            <button className={`font-semibold border-2 w-3/5 py-[10px] rounded-lg ${
+            <button className={`font-semibold border-2 w-3/5 py-[10px] rounded-lg m-auto ${
                 !isOtpRequired
                     ? 'bg-[#363062] text-[#E9D5CA] border-[#363062]'
                     : 'bg-transparent text-[#363062] border-[#363062] hover:text-[#E9D5CA] hover:bg-[#827397]'
