@@ -5,9 +5,15 @@ const FormPopup = ({ onClose, onSave, componentType }) => {
   const [placeholder, setPlaceholder] = useState('');
   const [required, setRequired] = useState(false);
   const [options, setOptions] = useState(['']);
+  // const [thankYouTitle, setThankYouTitle] = useState('')
+  // const [subText, setSubText] = useState('')
+  // const [subText2, setSubText2] = useState('')
 
   useEffect(() => {
     let defaultTitle = '';
+    // let defaultSubText = '';
+    // let defaultSubText2 = '';
+    // let defaultThankYouTitle = '';
 
     switch (componentType) {
       case 'Text':
@@ -46,12 +52,20 @@ const FormPopup = ({ onClose, onSave, componentType }) => {
       case 'FormHeading':
         defaultTitle = 'Form Heading';
         break;
+      // case 'ThankYou':
+      //   defaultThankYouTitle = '';
+      //   defaultSubText = '';
+      //   defaultSubText2 = '';
+      //   break;
       default:
         defaultTitle = 'Options';
         break;
     }
 
     setTitle(defaultTitle);
+    // setThankYouTitle(defaultThankYouTitle)
+    // setSubText(defaultSubText);
+    // setSubText2(defaultSubText2);
   }, [componentType]);
 
   const handleAddOption = () => {
@@ -65,7 +79,13 @@ const FormPopup = ({ onClose, onSave, componentType }) => {
   };
 
   const handleSave = () => {
-    onSave({ title, placeholder, required, options });
+    const data = { title, placeholder, required, options };
+    // if (componentType === 'ThankYou') {
+    //   data.thankYouTitle = thankYouTitle;
+    //   data.subText = subText;
+    //   data.subText2 = subText2;
+    // }
+    onSave(data);
     onClose();
   };
 
@@ -84,7 +104,7 @@ const FormPopup = ({ onClose, onSave, componentType }) => {
           />
         </div>
         
-        {componentType !== 'Button' && componentType !== 'Submit' && componentType !== 'FormHeading' && componentType !== 'Checkbox' && componentType !== 'Radio' && (
+        {componentType !== 'Button' && componentType !== 'Submit' && componentType !== 'FormHeading' && componentType !== 'Checkbox' && componentType !== 'Radio' && componentType !== 'ThankYou' && (
           <div className="mb-4">
             <label className="block text-[#363062] font-medium mb-1">Placeholder</label>
             <input 
@@ -95,16 +115,6 @@ const FormPopup = ({ onClose, onSave, componentType }) => {
             />
           </div>
         )}
-        
-        <div className="mb-4">
-          <label className="block text-[#363062] font-medium mb-1">Required</label>
-          <input 
-            className="h-4 w-4 text-indigo-600 border-gray-300 rounded" 
-            type="checkbox" 
-            checked={required} 
-            onChange={(e) => setRequired(e.target.checked)} 
-          />
-        </div>
 
         {(componentType === 'Radio' || componentType === 'Dropdown' || componentType === 'Checkbox') && (
           <div className="mb-4">
@@ -127,6 +137,48 @@ const FormPopup = ({ onClose, onSave, componentType }) => {
             </button>
           </div>
         )}
+
+        {/* {componentType === 'ThankYou' && (
+          <>
+            <div className="mb-4">
+              <label className="block text-[#363062] font-medium mb-1">Title</label>
+              <input 
+                className="w-full p-3 border border-gray-300 rounded-lg text-sm text-[#000000] focus:border-[#000000] focus:ring-0" 
+                type="text" 
+                // value={thankYouTitle} 
+                // onChange={(e) => setThankYouTitle(e.target.value)} 
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-[#363062] font-medium mb-1">Sub Text</label>
+              <input 
+                className="w-full p-3 border border-gray-300 rounded-lg text-sm text-[#000000] focus:border-[#000000] focus:ring-0" 
+                type="text" 
+                // value={subText} 
+                // onChange={(e) => setSubText(e.target.value)} 
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-[#363062] font-medium mb-1">Sub Text 2</label>
+              <input 
+                className="w-full p-3 border border-gray-300 rounded-lg text-sm text-[#000000] focus:border-[#000000] focus:ring-0" 
+                type="text" 
+                // value={subText2} 
+                // onChange={(e) => setSubText2(e.target.value)} 
+              />
+            </div>
+          </>
+        )} */}
+
+        <div className="mb-4">
+          <label className="block text-[#363062] font-medium mb-1">Required</label>
+          <input 
+            className="h-4 w-4 text-indigo-600 border-gray-300 rounded" 
+            type="checkbox" 
+            checked={required} 
+            onChange={(e) => setRequired(e.target.checked)} 
+          />
+        </div>
 
         <div className="flex justify-end mt-6">
           <button 
