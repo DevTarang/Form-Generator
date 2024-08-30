@@ -27,20 +27,6 @@ const RightPanel = ({ addedComponents, setAddedComponents }) => {
                 </button>
               </div>
             );
-          case 'Button':
-            return (
-              <div className='flex items-center relative'>
-                <div className='text-center w-full' key={index}>
-                  <button className='ml-[0px] inline-block align-middle w-full my-[12px] bg-[#00ADE7] py-[12px] px-[20px] rounded-[16px] text-white'>{component.title}</button>
-                </div>
-                <button 
-                  className="mt-[0px] absolute -right-12"
-                  onClick={() => handleDelete(index)}
-                >
-                  ✕
-                </button>
-              </div>
-            );
           case 'Submit':
             return (
               <div className='flex items-center relative'>

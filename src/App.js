@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import './App.css'; 
-import EditableButtonComponent from './components/EditableButtonComponent';
 import EditableSubmitComponent from './components/EditableSubmitComponent';
 import EditableDateComponent from './components/EditableDateComponent';
 import EditableEmailComponent from './components/EditableEmailComponent';
@@ -75,10 +74,6 @@ const App = () => {
                 return `<div class='simple-container' key='${index}'>
                     <label class='custom-label'>${component.title}</label>
                     <input id='${component.title}' name='${component.title.toLowerCase().replace(/\s+/g, '')}' class='custom-input' type='text' placeholder='${component.placeholder || ''}' ${component.required ? 'required' : ''} />
-                </div>`;
-            case 'Button':
-                return `<div class='button-container' key='${index}'>
-                    <button id='${component.title}' class='custom-button'  ${component.required ? 'required' : ''} >${component.title}</button>
                 </div>`;
             case 'Submit':
                 return `<div class='button-container' key='${index}'>
@@ -255,9 +250,9 @@ const App = () => {
                 document.getElementById("otpForm").style.display = 'block';
                 let formDataNumber = document.getElementById('customForm');
                 const formData = new FormData(formDataNumber);
-                document.getElementById("otpForm").innerHTML = "<div id='myModal' class='modal'><div class='modal-content'><p class='text-[24px] font-semibold text-align-center'>Verify OTP</p><p class='otpTitle'>We have sent an OTP on mobile number : <span class='wrapEditBtn' id='editBtn'>"
+                document.getElementById("otpForm").innerHTML = "<div id='myModal' class='modal'><div class='modal-content'><p class='text-[24px] font-semibold text-align-bold'>Verify OTP</p><p class='otpTitle'>We have sent an OTP on mobile number : <span class='wrapEditBtn' id='editBtn'>"
                 +firstMobile+ 
-                "&nbsp;" +editIcon+"Edit</span></p><p class='otpHeader'>Enter One Time Password (OTP)</p><div class='otpStylesInputs'><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /></div><div class='otpResendWrapper'><a id='resendOtp'>Didn’t recieved OTP ?</a><span id='resendTimer'>Resend in 10s</span></div><div class='button-container'><input id='submitOtp' class='custom-submit' type='submit' value='Submit'/></div><p id='otp-error' class='otpErrorMessage hide-text'>Incorrect OTP. Please try again.</p></div></div>";
+                "&nbsp;" +editIcon+"Edit</span></p><p class='otpHeader'>Enter One Time Password (OTP)</p><div class='otpStylesInputs'><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /></div><div class='otpResendWrapper'>Didn’t recieved OTP ?<a id='resendOtp' class='resendTimer'>Resend</a><span id='resendTimer'>Resend in 10s</span></div><div class='button-container'><input id='submitOtp' class='custom-submit' type='submit' value='Submit'/></div><p id='otp-error' class='otpErrorMessage hide-text'>Incorrect OTP. Please try again.</p></div></div>";
 
                 document.getElementById('editBtn').addEventListener('click', (event) => {
                     window.location.reload()
@@ -270,12 +265,16 @@ const App = () => {
                     document.getElementById('resendOtp').style.cursor = 'not-allowed';
                     document.getElementById('resendOtp').removeEventListener('click', handleResendOtpClick); // Remove previous event listener if any
 
+                    document.getElementById('resendOtp').style.display = "none";
                     const timerInterval = setInterval(() => {
+                        document.getElementById('resendTimer').style.display = "block";
                         document.getElementById('resendTimer').textContent = "Resend in "+resendTimer+"s";
                         resendTimer--;
 
                         if (resendTimer < 0) {
                             clearInterval(timerInterval);
+                            document.getElementById('resendOtp').style.display = "block";
+                            document.getElementById('resendTimer').style.display = "none";
                             document.getElementById('resendOtp').style.opacity = '1';
                             document.getElementById('resendOtp').style.cursor = 'pointer';
                             document.getElementById('resendOtp').addEventListener('click', handleResendOtpClick);
@@ -557,6 +556,11 @@ const App = () => {
                 gap: 10px;
                 margin-top: 12px;
                 margin-bottom: 12px;
+            }
+            .text-align-bold{
+                text-align: center;
+                font-weight: 600;
+                font-size:x-large;
             }
             .height-120 {
                 height: 120px;
@@ -893,7 +897,10 @@ const App = () => {
 
             .otpResendWrapper {
                 display: flex;
-                justify-content: space-between;
+                justify-content: space-around;
+            }
+            .resendTimer {
+                color: #00ADE7;
             }
             img.thank-you-image {
                 width: 100%;
@@ -981,7 +988,6 @@ const App = () => {
           <EditableRadioComponent addComponent={addComponent} />
           <EditableDropdownComponent addComponent={addComponent} />
           <EditableCheckboxComponent addComponent={addComponent} />
-          <EditableButtonComponent addComponent={addComponent} />
           <EditableSubmitComponent addComponent={addComponent} />
           {/* <EditableThankYouComponent addComponent={addComponent} /> */}
           <button className='font-semibold border-2 w-[300px] border-[#363062] p-[10px] text-[#363062] hover:text-[#E9D5CA] hover:bg-[#827397] rounded-lg m-auto ml-[-20px]' 

@@ -40,9 +40,6 @@ const FormPopup = ({ onClose, onSave, componentType }) => {
       case 'Date':
         defaultTitle = 'Date';
         break;
-      case 'Button':
-        defaultTitle = 'Button';
-        break;
       case 'Submit':
         defaultTitle = 'Submit';
         break;
@@ -88,7 +85,7 @@ const FormPopup = ({ onClose, onSave, componentType }) => {
           />
         </div>
         
-        {componentType !== 'Button' && componentType !== 'Date' && componentType !== 'Submit' && componentType !== 'FormHeading' && componentType !== 'Checkbox' && componentType !== 'Radio' && componentType !== 'ThankYou' && (
+        {componentType !== 'Date' && componentType !== 'Submit' && componentType !== 'FormHeading' && componentType !== 'Checkbox' && componentType !== 'Radio' && componentType !== 'ThankYou' && (
           <div className="mb-4">
             <label className="block text-[#363062] font-medium mb-1">Placeholder</label>
             <input 
