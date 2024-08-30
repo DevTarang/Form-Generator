@@ -716,7 +716,7 @@ const App = () => {
             .custom-input:focus {
                 border-color: #00ADE7;
             }
-            input[type='submit'] {
+            .custom-submit {
               background-color: #00ADE7;
               color: white;
               border: none;
