@@ -82,7 +82,6 @@ const App = () => {
                 </div>`;
             case 'Submit':
                 return `<div class='button-container' key='${index}'>
-                    // <input id='submit-otp' class='custom-submit'  ${component.required ? 'required' : ''}  value='${component.title}' />
                     <button id='submit-otp' class='custom-submit' type='submit' ${component.required ? 'required' : ''}>
                         <span id="submit-text" class='button-text'>${component.title}</span>
                         <div id="loader-div" class='loader loader-default hide'></div>
