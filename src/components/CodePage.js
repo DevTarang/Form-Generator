@@ -15,15 +15,15 @@ const CodePage = () => {
 
   return (
     <div className="code-page relative w-full text-center flex flex-col gap-[20px] pt-[20px]">
-      <button className='absolute left-[20px] ' onClick={() => navigate('/')}>
+      <button className='absolute left-[20px] top-[22px]' onClick={() => navigate('/')}>
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M15 19l-7-7 7-7" stroke="#363062" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
-      <h1 className='text-2xl font-me text-[#363062]'>Generated Code</h1>
+      <h1 className='text-3xl font-bold text-[#363062]'>Generated Code</h1>
       <div className="relative mx-[30px]">
         <textarea
-          className='w-full rounded-xl py-[10px] px-[20px]'
+          className='w-full rounded-xl py-[10px] px-[20px] shadow-xl '
           rows="20"
           cols="80"
           value={formCode || ''}

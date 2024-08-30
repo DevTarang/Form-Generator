@@ -6,13 +6,13 @@ import EditableSubmitComponent from './components/EditableSubmitComponent';
 import EditableDateComponent from './components/EditableDateComponent';
 import EditableEmailComponent from './components/EditableEmailComponent';
 import EditableNumberComponent from './components/EditableNumberComponent';
+import EditablePhoneNumberComponent from './components/EditablePhoneNumberComponent';
 import EditablePasswordComponent from './components/EditablePasswordComponent';
 import EditableRadioComponent from './components/EditableRadioComponent';
 import EditableTextComponent from './components/EditableTextComponent';
 import EditableTextAreaComponent from './components/EditableTextAreaComponent';
 import EditableDropdownComponent from './components/EditableDropdownComponent';
 import EditableCheckboxComponent from './components/EditableCheckboxComponent';
-// import EditableThankYouComponent from './components/EditableThankYouComponent';
 import EditableFormHeadingComponent from './components/EditableFormHeadingComponent'; 
 import RightPanel from './components/RightPanel';
 import CodePage from './components/CodePage';
@@ -23,11 +23,15 @@ const App = () => {
   const [thankYouTitle, setThankYouTitle] = useState("Thank You")
   const [subText, setSubText] = useState("for showing interest")
   const [subText2, setSubText2] = useState("Our executive will call you shortly")
-  const [imageLink, setImageLink] = useState("https://i.ibb.co/DQ8tt3k/tick-Qmy-APBAYGk.png")
+  const [imageLink, setImageLink] = useState("https://s3-alpha-sig.figma.com/img/61a6/b896/e406fa7eb7b0f292f1ccdecb9b5b67f4?Expires=1725235200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=oDG70uuiA9gGJt~WzRlXBZ~3wQafBnMrlzMRRoi3aY09VSk5nIPUxOvcVy1vU0NC2xKrHiYVbKLeLZt3pT4F9TUqFmhYiXqfUOk2g8DpnRv1LVGq9trvNTZLB6cQzT5EtOhRZEuhHbNfQCGci9F69VGXTuIJpVTGRYE23CNEchk7lSBmcKDhjWOTqhHNGm-xNyQTEeLdcMuovnDWy-L-RpRBvaSH4cMACQsAJZ32-wYxF~LhEzv2P5fRIpEMC9fra1O7GumCPA9k7Tn60HYdMj1Am1oh5AAAlznTohcrHbID563qvxMqv3BmCY8qlyTjhPCxxPoCffJ~39qY46IGzQ__")
+  const [redirectionLink, setRedirectionLink] = useState("")
+  const [redirectionText, setRedirectionText] = useState("Redirection Button")
   const [thankYouTitleChange, setThankYouTitleChange] = useState(thankYouTitle)
   const [subTextChange, setSubTextChange] = useState(subText)
   const [subText2Change, setSubText2Change] = useState(subText2)
   const [imageLinkChange, setImageLinkChange] = useState(imageLink)
+  const [redirectionLinkChange, setRedirectionLinkChange] = useState(redirectionLink)
+  const [redirectionTextChange, setRedirectionTextChange] = useState(redirectionText)
   const [isOtpRequired, setIsOtpRequired] = useState(false);
 
   const [showPopup, setShowPopup] = useState(false);
@@ -49,10 +53,12 @@ const App = () => {
   };
 
   const handleSave = () => {
+    setRedirectionText(redirectionTextChange);
+    setRedirectionLink(redirectionLinkChange);
     setImageLink(imageLinkChange);
     setThankYouTitle(thankYouTitleChange);
-    setSubText(subTextChange)
-    setSubText2(subText2Change)
+    setSubText(subTextChange);
+    setSubText2(subText2Change);
     setShowPopup(false);
   };
 
@@ -76,7 +82,11 @@ const App = () => {
                 </div>`;
             case 'Submit':
                 return `<div class='button-container' key='${index}'>
-                    <input id='submit-otp' class='custom-submit' type='submit' ${component.required ? 'required' : ''}  value='${component.title}' />
+                    // <input id='submit-otp' class='custom-submit'  ${component.required ? 'required' : ''}  value='${component.title}' />
+                    <button id='submit-otp' class='custom-submit' type='submit' ${component.required ? 'required' : ''}>
+                        <span id="submit-text" class='button-text'>${component.title}</span>
+                        <div id="loader-div" class='loader loader-default hide'></div>
+                    </button>
                 </div>`;
             case 'Date':
                 return `<div class='simple-container' key='${index}'>
@@ -87,6 +97,12 @@ const App = () => {
                 return `<div class='simple-container' key='${index}'>
                     <label class='custom-label'>${component.title}</label>
                     <input id='${component.title}' name='${component.title.toLowerCase().replace(/\s+/g, '')}' class='custom-input' type='email' placeholder='${component.placeholder || ''}' ${component.required ? 'required' : ''} />
+                </div>`;
+            case 'PhoneNumber':
+                return `<div class='simple-container' id='phone-number-container' key='${index}'>
+                    <label class='custom-label'>${component.title}</label>
+                    <input id='${component.title}' name='${component.title.toLowerCase().replace(/\s+/g, '')}' class='custom-input' type='tel' pattern="[6-9]{1}[0-9]{9}" maxlength="10" placeholder='${component.placeholder || ''}' ${component.required ? 'required' : ''} />
+                    <div class="error-message">Please enter a valid 10-digit phone number.</div>
                 </div>`;
             case 'Number':
                 return `<div class='simple-container' key='${index}'>
@@ -121,8 +137,8 @@ const App = () => {
                           defaultValue=''
                           ${component.required ? 'required' : ''}
                         >
-                          <option value='' disabled hidden>${component.placeholder || ''}</option>
-                          ${component.options.map((option, idx) => `<option key='${idx}' name='${component.title.toLowerCase().replace(/\s+/g, '')}' value='${option}'>${option}</option>`).join('')}
+                          <option value='' disabled selected >${component.placeholder || ''}</option>
+                          ${component.options.map((option, idx) => `<option key='${idx}' class="selectedopt" name='${component.title.toLowerCase().replace(/\s+/g, '')}' value='${option}'>${option}</option>`).join('')}
                         </select>
                         <svg class='dropdown-icon' width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'>
                           <path d='M9.70711 0.292893C10.0676 0.653377 10.0953 1.22061 9.7903 1.6129L9.70711 1.70711L5.70711 5.70711C5.34662 6.06759 4.77939 6.09532 4.3871 5.7903L4.29289 5.70711L0.292893 1.70711C-0.0976305 1.31658 -0.0976305 0.683418 0.292893 0.292893C0.653378 -0.0675907 1.22061 -0.0953203 1.6129 0.209705L1.70711 0.292893L5 3.585L8.29289 0.292893C8.65338 -0.0675907 9.22061 -0.0953203 9.6129 0.209705L9.70711 0.292893Z' fill='#7D8592'/>
@@ -159,62 +175,142 @@ const App = () => {
                 return `<div key='${index}'>
                     <h2 id='${component.title}' class='form-heading'>${component.title}</h2>
                 </div>`;
-            // case 'ThankYou':
-            //   setThankYouTitle(component.thankYouTitle);
-            //   setSubText(component.subText);
-            //   setSubText2(component.subText2);
-            //   break;
             default:
               return '';
         }
     }).join('\n');
 
     const scriptVal = isOtpRequired ? `<script>
+
+        function validateForm() {
+            const form = document.getElementById('customForm');
+            const requiredFields = form.querySelectorAll('[required]');
+            const submitButton = document.getElementById('submit-otp');
+
+            let isFormValid = true;
+
+            requiredFields.forEach(field => {
+                if (!field.checkValidity()) {
+                    isFormValid = false;
+                }
+            });
+
+            submitButton.disabled = !isFormValid;
+        }
+        window.addEventListener('load', validateForm);
+        document.getElementById('customForm').addEventListener('input', validateForm);
+        document.getElementById('customForm').addEventListener('change', validateForm);
+
+
       document.getElementById('submit-otp').addEventListener('click', async (event) => {
         event.preventDefault();
 
+        const formSubmitBtn = document.getElementById('submit-otp');
+        const loaderDiv = document.getElementById('loader-div');
+        const submitText = document.getElementById('submit-text');
+
+        function toggleLoader(show) {
+            if (show) {
+                loaderDiv.classList.remove('hide');
+                submitText.classList.add('hide');
+                formSubmitBtn.disabled = true; // Optionally disable the button while loading
+            } else {
+                submitText.classList.remove('hide');
+                loaderDiv.classList.add('hide');
+                formSubmitBtn.disabled = false; // Re-enable the button once loading is complete
+            }
+        }
+
         const editIcon = "<svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M14 14.6665H2C1.72667 14.6665 1.5 14.4398 1.5 14.1665C1.5 13.8932 1.72667 13.6665 2 13.6665H14C14.2733 13.6665 14.5 13.8932 14.5 14.1665C14.5 14.4398 14.2733 14.6665 14 14.6665Z' fill='#00ADE7'/><path d='M12.68 2.31994C11.3867 1.02661 10.12 0.993275 8.79334 2.31994L7.98668 3.12661C7.92001 3.19328 7.89334 3.29994 7.92001 3.39328C8.42668 5.15994 9.84001 6.57328 11.6067 7.07994C11.6333 7.08661 11.66 7.09328 11.6867 7.09328C11.76 7.09328 11.8267 7.06661 11.88 7.01328L12.68 6.20661C13.34 5.55328 13.66 4.91994 13.66 4.27994C13.6667 3.61994 13.3467 2.97994 12.68 2.31994Z' fill='#00ADE7'/><path d='M10.4067 7.68654C10.2133 7.5932 10.0267 7.49987 9.84668 7.3932C9.70001 7.30654 9.56001 7.2132 9.42001 7.1132C9.30668 7.03987 9.17334 6.9332 9.04667 6.82654C9.03334 6.81987 8.98667 6.77987 8.93334 6.72654C8.71334 6.53987 8.46668 6.29987 8.24668 6.0332C8.22668 6.01987 8.19334 5.9732 8.14668 5.9132C8.08001 5.8332 7.96668 5.69987 7.86668 5.54654C7.78668 5.44654 7.69334 5.29987 7.60668 5.1532C7.50001 4.9732 7.40668 4.7932 7.31334 4.60654C7.19097 4.34431 6.8468 4.26641 6.64218 4.47103L2.89334 8.21987C2.80668 8.30654 2.72668 8.4732 2.70668 8.58654L2.34668 11.1399C2.28001 11.5932 2.40668 12.0199 2.68668 12.3065C2.92668 12.5399 3.26001 12.6665 3.62001 12.6665C3.70001 12.6665 3.78001 12.6599 3.86001 12.6465L6.42001 12.2865C6.54001 12.2665 6.70668 12.1865 6.78668 12.0999L10.5417 8.34484C10.7422 8.14432 10.6669 7.79929 10.4067 7.68654Z' fill='#00ADE7'/></svg>";
 
-        const firstNumberInput = document.querySelector('input[type="number"]');
+        const phoneNumberContainer = document.getElementById('phone-number-container');
+        const firstNumberInput = document.querySelector('input[type="tel"]');
         const firstMobile = firstNumberInput ? firstNumberInput.value : null;
 
-        try {
-            let otpPayload = {
-                "viaEmail": false,
-                "viaSms": true,
-                "resend": false,
-                "mobile": firstMobile,
-                "countryExt": "91",
-                "loginScreen": true
+        if(firstNumberInput){
+            const phoneNumberValue = firstNumberInput.value.trim();
+            
+            if (firstNumberInput.hasAttribute('required') || phoneNumberValue.length > 0) {
+                if (!firstNumberInput.checkValidity() || phoneNumberValue.length !== 10) {
+                    phoneNumberContainer.classList.add('show-error');
+                    return;
+                } else {
+                    phoneNumberContainer.classList.remove('show-error');
+                }
+            } else {
+                phoneNumberContainer.classList.remove('show-error');
             }
-
-            const generateOtpResponse = await fetch('alphaapi.testbook.com/api/v2/blog-otp?mobile="+firstMobile+"', {
+        }
+        toggleLoader(true);
+        try {
+            const generateOtpResponse = await fetch('https://betaapi.testbook.com/api/v2/blog-otp?mobile='+firstMobile, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(otpPayload)
+                }
             });
 
-            // currently making this check as false bcz otp is not coming properly, change it later
-            // if (generateOtpResponse?.ok) {
-            if (true) {
-                document.getElementById("container").style.display = 'none';
-                document.getElementById("thanks").classList.remove('hide');
-
+            toggleLoader(false);
+            if (generateOtpResponse?.ok) {
+                document.getElementById("customForm").style.display = 'none';
+                document.getElementById("otpForm").style.display = 'block';
                 let formDataNumber = document.getElementById('customForm');
                 const formData = new FormData(formDataNumber);
-                document.getElementById("thanks").innerHTML = "<div id='myModal' class='modal'><div class='modal-content'><p class='text-[24px] font-semibold text-align-center'>Verify OTP</p><p class='otpTitle'>We have sent an OTP on mobile number : <span class='wrapEditBtn'>"
+                document.getElementById("otpForm").innerHTML = "<div id='myModal' class='modal'><div class='modal-content'><p class='text-[24px] font-semibold text-align-center'>Verify OTP</p><p class='otpTitle'>We have sent an OTP on mobile number : <span class='wrapEditBtn' id='editBtn'>"
                 +firstMobile+ 
-                "&nbsp;" +editIcon+"Edit</span></p><p class='otpHeader'>Enter One Time Password (OTP)</p><div class='otpStylesInputs'><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /></div><div class='otpResendWrapper'><span>Didn’t recieved OTP ?</span><span>Resend in 10s</span></div><div class='button-container'><input id='submitOtp' class='custom-submit' type='submit' value='Submit'/></div></div></div>";
+                "&nbsp;" +editIcon+"Edit</span></p><p class='otpHeader'>Enter One Time Password (OTP)</p><div class='otpStylesInputs'><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /></div><div class='otpResendWrapper'><a id='resendOtp'>Didn’t recieved OTP ?</a><span id='resendTimer'>Resend in 10s</span></div><div class='button-container'><input id='submitOtp' class='custom-submit' type='submit' value='Submit'/></div><p id='otp-error' class='otpErrorMessage hide-text'>Incorrect OTP. Please try again.</p></div></div>";
+
+                document.getElementById('editBtn').addEventListener('click', (event) => {
+                    window.location.reload()
+                })
+
+                // Function to start the resend OTP timer
+                function startResendTimer() {
+                    let resendTimer = 10;
+                    document.getElementById('resendOtp').style.opacity = '0.4';
+                    document.getElementById('resendOtp').style.cursor = 'not-allowed';
+                    document.getElementById('resendOtp').removeEventListener('click', handleResendOtpClick); // Remove previous event listener if any
+
+                    const timerInterval = setInterval(() => {
+                        document.getElementById('resendTimer').textContent = "Resend in "+resendTimer+"s";
+                        resendTimer--;
+
+                        if (resendTimer < 0) {
+                            clearInterval(timerInterval);
+                            document.getElementById('resendOtp').style.opacity = '1';
+                            document.getElementById('resendOtp').style.cursor = 'pointer';
+                            document.getElementById('resendOtp').addEventListener('click', handleResendOtpClick);
+                        }
+                    }, 1000);
+                }
+
+                // Function to handle the resend OTP click event
+                async function handleResendOtpClick() {
+                    startResendTimer(); // Disable the button and start the timer again
+
+                    // Your logic to resend the OTP goes here
+                    const generateOtpResponse = await fetch('https://betaapi.testbook.com/api/v2/blog-otp?mobile='+firstMobile, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    });
+                }
+
+                // Initial call to start the timer when the form is first displayed
+                startResendTimer();
+
+                let otpNumber = 0;
 
                 document.querySelectorAll('.otpStylesInputs input').forEach((input, index, inputs) => {
                     input.addEventListener('input', () => {
                         if (input.value.length === 1 && index < inputs.length - 1) {
                             inputs[index + 1].focus();
                         }
+                        let concatenatedOtp = [...inputs].map(input => input.value).join('');
+                        otpNumber = parseInt(concatenatedOtp, 10);
                     });
-
+                    
                     // Optional: Move to previous input when backspacing
                     input.addEventListener('keydown', (e) => {
                         if (e.key === "Backspace" && input.value === '' && index > 0) {
@@ -222,46 +318,27 @@ const App = () => {
                         }
                     });
                 });
+                const otpSubmitBtn = document.getElementById('submitOtp');
 
                 document.getElementById('submitOtp').addEventListener('click', async (event) => {
                     event.preventDefault();
 
+                    toggleLoader(true);
+                    
                     let formData1 = document.getElementById('customForm');
                     const formData = new FormData(formData1);
 
-                    const button = document.getElementById('submitOtp');
-                    const loader = document.createElement('div');
-                    loader.className = 'loader';
-
-                    button.appendChild(loader);
-                    button.classList.add('hide-text');
-                    loader.style.display = 'block';
-
                     try {
-                        let verifyOtpPayload = {
-                            "viaEmail": false,
-                            "viaSms": true,
-                            "otp": "1245",
-                            "mobile": firstMobile,
-                            "countryExt": "91",
-                            "sessionId": 1723643064358,
-                            "fingerprintId": "861f1d21eb6cdcc1369839ba93d686ab",
-                            "trackingData": {
-                                "/courses/add/content?id": "249583",
-                                "isCourseOverview": "true"
-                            }
-                        }
-
-                        const verifyOtpResponse = await fetch('alphaapi.testbook.com/api/v2/blog-otp/validate?mobile="+firstMobile+"&otp="+verifyOtpPayload.otp+"', {
+                        const verifyOtpResponse = await fetch('https://betaapi.testbook.com/api/v2/blog-otp/validate?mobile='+firstMobile+'&otp='+otpNumber, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify(verifyOtpPayload)
                         });
-
-                        // verifyOtpResponse.ok add this 
-                        if (true) {
+                        toggleLoader(false);
+                        console.log(verifyOtpResponse);
+                        const otpErrorElement = document.getElementById('otp-error');
+                        if (verifyOtpResponse?.ok) {
                             try {
                                 const data = {
                                     'data': []
@@ -291,27 +368,30 @@ const App = () => {
                                     });
                                 }
 
-                                const response = await fetch('https://alphaapi.testbook.com/api/v2/blog-sheet', {
+                                const response = await fetch('https://betaapi.testbook.com/api/v2/blog-sheet', {
                                     method: 'POST',
-                                    mode: 'no-cors',
                                     headers: {
                                         'Content-Type': 'application/json',
                                     },
                                     body: JSON.stringify(data)
                                 });
 
-                                document.getElementById("container").style.display = 'none';
-
+                                // response.ok
+                                if(true){
+                                    document.getElementById("container").style.display = 'none';
+                                    document.getElementById("thanks").classList.remove('hide');
+                                }else{
+                                    alert('error')
+                                }
+                                
                             } catch {
                                 console.error('Error:', error);
-                            } finally {
-                                loader.style.display = 'none';
-                                button.classList.remove('hide-text');
-                                button.removeChild(loader);
-                            }
+                            } 
                             document.getElementById('redirectButton').addEventListener('click', () => {
                                 window.location.reload();
                             });
+                        }else {
+                            otpErrorElement.classList.remove('hide-text');
                         }
 
                     } catch (e) {
@@ -328,8 +408,62 @@ const App = () => {
     );
     </script>` :
     `<script>
+
+        function validateForm() {
+            const form = document.getElementById('customForm');
+            const requiredFields = form.querySelectorAll('[required]');
+            const submitButton = document.getElementById('submit-otp');
+
+            let isFormValid = true;
+
+            requiredFields.forEach(field => {
+                if (!field.checkValidity()) {
+                    isFormValid = false;
+                }
+            });
+
+            submitButton.disabled = !isFormValid;
+        }
+        window.addEventListener('load', validateForm);
+        document.getElementById('customForm').addEventListener('input', validateForm);
+        document.getElementById('customForm').addEventListener('change', validateForm);
+
+        const formSubmitBtn = document.getElementById('submit-otp');
+        const loaderDiv = document.getElementById('loader-div');
+        const submitText = document.getElementById('submit-text');
+
+        function toggleLoader(show) {
+            if (show) {
+                loaderDiv.classList.remove('hide');
+                submitText.classList.add('hide');
+                formSubmitBtn.disabled = true; // Optionally disable the button while loading
+            } else {
+                submitText.classList.remove('hide');
+                loaderDiv.classList.add('hide');
+                formSubmitBtn.disabled = false; // Re-enable the button once loading is complete
+            }
+        }
+
+
         document.getElementById('submit-otp').addEventListener('click', async (event) => {
         event.preventDefault(); 
+
+        const phoneNumberContainer = document.getElementById('phone-number-container');
+        const phoneNumberInput = document.querySelector('input[type="tel"]');
+        if(phoneNumberInput){
+            const phoneNumberValue = phoneNumberInput.value.trim();
+            
+            if (phoneNumberInput.hasAttribute('required') || phoneNumberValue.length > 0) {
+                if (!phoneNumberInput.checkValidity() || phoneNumberValue.length !== 10) {
+                    phoneNumberContainer.classList.add('show-error');
+                    return;
+                } else {
+                    phoneNumberContainer.classList.remove('show-error');
+                }
+            } else {
+                phoneNumberContainer.classList.remove('show-error');
+            }
+        }
 
         // Hide form container and show the thank you message
         document.getElementById("container").style.display = 'none';
@@ -367,8 +501,9 @@ const App = () => {
             for (const [key, value] of Object.entries(utmParams)) {
                 data.data.push({ 'key': key, 'value': value });
             }
+            toggleLoader( true);
 
-            const response = await fetch('https://alphaapi.testbook.com/api/v2/blog-sheet', {
+            const response = await fetch('https://betaapi.testbook.com/api/v2/blog-sheet', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -377,6 +512,7 @@ const App = () => {
             });
 
             console.log('Response:', response);
+            toggleLoader( false);
 
         } catch (error) {
             console.error('Error:', error);
@@ -385,9 +521,6 @@ const App = () => {
             button.classList.remove('hide-text');
             button.removeChild(loader);
         }
-        document.getElementById('redirectButton').addEventListener('click', () => {
-            window.location.reload();
-        });
     });
     </script>`;
 
@@ -597,6 +730,7 @@ const App = () => {
               overflow: hidden;
             }
             .custom-button {
+              cursor: pointer;
               margin-left: 0px;
               border: none;
               display: inline-block;
@@ -609,6 +743,10 @@ const App = () => {
               border-radius: 16px;
               color: white;
               text-align: center;
+            }
+            .selectedopt{
+              color: black;
+              font-weight: 700;
             }
             .button-container {
               width: 100%;
@@ -653,24 +791,24 @@ const App = () => {
               color: #000000;
             }
             .loader {
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-              border: 4px solid rgba(0, 0, 0, 0.1);
-              border-radius: 50%;
-              border-top: 4px solid white;
-              width: 24px;
-              height: 24px;
-              animation: spin 1s linear infinite;
-              display: none; 
+                border: 4px solid rgba(0, 0, 0, 0.1);
+                border-radius: 50%;
+                border-top: 4px solid #007bff; 
+                width: 24px; 
+                height: 24px;
+                animation: spin 1s linear infinite; 
+                display: inline-block;
             }
+
             @keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
             }
             .hide-text {
               visibility: hidden;
+            }
+            .otpErrorMessage{
+                color: red;
             }
             .close {
             color: #aaaaaa;
@@ -717,14 +855,29 @@ const App = () => {
                 border: 1px solid #D8E0F0;
                 box-sizing: border-box;
                 box-shadow: 0px 1px 2px rgba(184, 200, 224, 0.222055);
-                min-width: 59.2px;
-                max-width: 60px;
+                width: 59.2px;
                 height: 58px;
                 font-style: normal;
                 text-indent: unset;
                 text-align: center;
                 font-weight: bold;
                 font-size: 14px;
+            }
+            @media screen and (max-width: 530px) {
+                .inputStyle {
+                    width: 49.2px;
+                }
+            }
+            @media screen and (max-width: 460px) {
+                .inputStyle {
+                    width: 39px;
+                }
+            }
+
+            @media screen and (max-width: 400px) {
+                .inputStyle {
+                    width: 32px;
+                }
             }
 
             input::-webkit-outer-spin-button,
@@ -734,7 +887,7 @@ const App = () => {
             }
 
             /* Firefox */
-            input[type=number] {
+            input[type=number], input[type=tel]{
                 -moz-appearance: none;
                 appearance: none;
             }
@@ -743,6 +896,29 @@ const App = () => {
                 display: flex;
                 justify-content: space-between;
             }
+            img.thank-you-image {
+                width: 100%;
+                max-width: 260px;
+                height: auto;
+            }
+            .error-message {
+                color: red;
+                font-size: 12px;
+                display: none;
+            }
+            .show-error .error-message {
+                display: block;
+            }
+            .wrapEditBtn{
+                cursor: pointer;
+            }
+            .custom-submit:disabled {
+                background-color: #cccccc;
+                cursor: not-allowed;
+            }
+            .hide{
+                display: none;
+            }
         </style>
     </head>
     <body>
@@ -750,17 +926,18 @@ const App = () => {
             <form id='customForm' action='#'>
                 ${formCode}
             </form>
+            <div id="otpForm"></div>
         </div>
         <div id="thanks" class="hide">
           <div class='thank-you-message'>
-            <img src="${imageLink}" alt="Thank You" />
+            <img src="${imageLink}"  class="thank-you-image" alt="Thank You" />
             <div> 
               <h1>${thankYouTitle}</h1>
               <h3>${subText}</h3>
             </div>
             <p>${subText2}</p> 
-            <div class='button-container''>
-              <button class='custom-button id='redirectButton''>Redirection Button</button>
+            <div class='button-container'>
+              <button class='custom-button' id='redirectButton' onclick="window.location.href='${redirectionLink}'">${redirectionText}</button>
             </div>
           </div>
         </div>
@@ -796,16 +973,17 @@ const App = () => {
           </div>
           <EditableFormHeadingComponent addComponent={addComponent}/>
           <EditableTextComponent addComponent={addComponent} />
-          <EditableButtonComponent addComponent={addComponent} />
-          <EditableSubmitComponent addComponent={addComponent} />
           <EditableDateComponent addComponent={addComponent} />
           <EditableEmailComponent addComponent={addComponent} />
           <EditableNumberComponent addComponent={addComponent} />
+          <EditablePhoneNumberComponent addComponent={addComponent} />
           <EditablePasswordComponent addComponent={addComponent} />
           <EditableTextAreaComponent addComponent={addComponent} />
           <EditableRadioComponent addComponent={addComponent} />
           <EditableDropdownComponent addComponent={addComponent} />
           <EditableCheckboxComponent addComponent={addComponent} />
+          <EditableButtonComponent addComponent={addComponent} />
+          <EditableSubmitComponent addComponent={addComponent} />
           {/* <EditableThankYouComponent addComponent={addComponent} /> */}
           <button className='font-semibold border-2 w-[300px] border-[#363062] p-[10px] text-[#363062] hover:text-[#E9D5CA] hover:bg-[#827397] rounded-lg m-auto ml-[-20px]' 
           onClick={handleAddClick}>
@@ -849,6 +1027,24 @@ const App = () => {
                         type="text" 
                         value={imageLinkChange} 
                         onChange={(e) => setImageLinkChange(e.target.value)} 
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-[#363062] font-medium mb-1">Redirection Text</label>
+                    <input 
+                        className="w-full p-3 border border-gray-300 rounded-lg text-sm text-[#000000] focus:border-[#000000] focus:ring-0" 
+                        type="text" 
+                        value={redirectionTextChange} 
+                        onChange={(e) => setRedirectionTextChange(e.target.value)} 
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-[#363062] font-medium mb-1">Redirection Link</label>
+                    <input 
+                        className="w-full p-3 border border-gray-300 rounded-lg text-sm text-[#000000] focus:border-[#000000] focus:ring-0" 
+                        type="text" 
+                        value={redirectionLinkChange} 
+                        onChange={(e) => setRedirectionLinkChange(e.target.value)} 
                     />
                 </div>
                 <div className="flex justify-end mt-6">
