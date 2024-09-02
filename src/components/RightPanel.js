@@ -9,7 +9,7 @@ const RightPanel = ({ addedComponents, setAddedComponents }) => {
   }
 
   return (
-    <div className="right-panel w-full bg-white rounded-[16px] p-[40px]">
+    <div className="right-panel w-full bg-white rounded-[16px] p-[40px] shadow-xl">
       {addedComponents.map((component, index) => {
         switch (component.type) {
           case 'Text':
