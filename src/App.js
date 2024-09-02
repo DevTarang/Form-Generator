@@ -963,7 +963,7 @@ const App = () => {
         <h1 className='text-4xl font-bold text-[#363062]'>Form Generator</h1>
         <h4 className='text-lg text-[#4D4C7D]'>Have the form you like</h4>
       </div>
-      <div className='flex w-full flex-wrap'>
+      <div className='flex w-full'>
         <div className='left-panel max-w-[300px] items-center flex flex-col gap-[10px] '>
           <div className='flex flex-row justify-around items-center w-full gap-[10px]'>
             <button className={`font-semibold border-2 w-3/5 py-[10px] rounded-lg m-auto ${
