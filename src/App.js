@@ -535,10 +535,10 @@ const App = () => {
         <style>
             body {
                 font-family: 'Inter', sans-serif;
-                background-color: #E9D5CA;
+                //background-color: #E9D5CA;
+                //padding:20px;
                 color: #363062;
                 margin: 0;
-                padding: 20px;
             }
             .relative {
                 position: relative;
@@ -764,30 +764,38 @@ const App = () => {
               margin-top: 16px;
               margin-bottom: 24px;
             }
+            .thanks{
+              width:100%;
+            }
             .thank-you-message {
               text-align: center;
               display: flex;
               flex-direction: column;
               align-items: center;
-              gap: 24px;
+              gap: 12px;
               padding: 24px;
               background-color: #fff;
               border-radius: 16px;
+              justify-content: center;
+              height: 100vh;
             }
             .thank-you-message h1 {
               font-size: 24px;
               color: #000000;
-              margin-bottom: 10px;
+              margin:0;
               font-weight: 600;
               line-height: 28.8px;
-            }
+              }
             .thank-you-message h3 {
+              margin: 0;
+              margin-top: 5px;
               font-size: 16px;
               font-weight: 600;
               line-height: 19.2px;
               color: #000000;
-            }
+              }
             .thank-you-message p {
+              margin: 0;
               font-size: 12px;
               font-weight: 400;
               line-height: 15.6px;
