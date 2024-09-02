@@ -943,7 +943,7 @@ const App = () => {
             </div>
             <p>${subText2}</p> 
             <div class='button-container'>
-              <button class='custom-button' id='redirectButton' onclick="window.location.href='${redirectionLink}'">${redirectionText}</button>
+              <button class='custom-button' id='redirectButton' onclick="window.parent.location.href='${redirectionLink}'">${redirectionText}</button>
             </div>
           </div>
         </div>
