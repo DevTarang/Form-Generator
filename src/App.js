@@ -535,8 +535,8 @@ const App = () => {
         <style>
             body {
                 font-family: 'Inter', sans-serif;
-                //background-color: #E9D5CA;
-                //padding:20px;
+                /*background-color: #E9D5CA;
+                padding:20px;*/
                 color: #363062;
                 margin: 0;
             }
@@ -783,6 +783,7 @@ const App = () => {
               font-size: 24px;
               color: #000000;
               margin:0;
+              margin-top: 24px;
               font-weight: 600;
               line-height: 28.8px;
               }
