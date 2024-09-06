@@ -84,6 +84,7 @@ const FormPopup = ({ onClose, onSave, componentType }) => {
             onChange={(e) => setTitle(e.target.value)} 
           />
         </div>
+
         
         {componentType !== 'Date' && componentType !== 'Submit' && componentType !== 'FormHeading' && componentType !== 'Checkbox' && componentType !== 'Radio' && componentType !== 'ThankYou' && (
           <div className="mb-4">

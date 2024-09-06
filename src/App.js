@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import './App.css'; 
 import EditableSubmitComponent from './components/EditableSubmitComponent';
@@ -17,6 +17,7 @@ import RightPanel from './components/RightPanel';
 import CodePage from './components/CodePage';
 
 const App = () => {
+
   const [addedComponents, setAddedComponents] = useState([]);
   const navigate = useNavigate();
   const [thankYouTitle, setThankYouTitle] = useState("Thank You")
@@ -32,15 +33,25 @@ const App = () => {
   const [redirectionLinkChange, setRedirectionLinkChange] = useState(redirectionLink)
   const [redirectionTextChange, setRedirectionTextChange] = useState(redirectionText)
   const [isOtpRequired, setIsOtpRequired] = useState(false);
-
+  const [uniqueId, setUniqueId] = useState(0);
+  
   const [showPopup, setShowPopup] = useState(false);
+  const [uniqueShowPopup, setUniqueShowPopup] = useState(false);
 
   const handleAddClick = () => {
     setShowPopup(true);
   };
 
+  const handleSetUniqueId = () => {
+    setUniqueShowPopup(true);
+  };
+
   const onClose = () => {
     setShowPopup(false);
+  };
+
+  const onCloseUnique = () => {
+    setUniqueShowPopup(false);
   };
 
   const handleWithOtp = () => {
@@ -58,14 +69,29 @@ const App = () => {
     setThankYouTitle(thankYouTitleChange);
     setSubText(subTextChange);
     setSubText2(subText2Change);
+    setUniqueId(uniqueId);
     setShowPopup(false);
+    setUniqueShowPopup(false);
   };
-
-  
 
   const addComponent = (component) => {
     setAddedComponents([...addedComponents, component]);
   };
+
+  function generateUniqueCode() {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let uniqueCode = '';
+    for (let i = 0; i < 6; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      uniqueCode += characters[randomIndex];
+    }
+    return uniqueCode;
+  }
+
+  useEffect(() => {
+    const newUniqueId = generateUniqueCode();
+    setUniqueId(newUniqueId);
+  }, []);
 
   const generateCode = () => {
     const formCode = addedComponents.map((component, index) => {
@@ -95,7 +121,7 @@ const App = () => {
             case 'PhoneNumber':
                 return `<div class='simple-container' id='phone-number-container' key='${index}'>
                     <label class='custom-label'>${component.title}</label>
-                    <input id='${component.title}' name='${component.title.toLowerCase().replace(/\s+/g, '')}' class='custom-input' type='tel' pattern="[6-9]{1}[0-9]{9}" maxlength="10" placeholder='${component.placeholder || ''}' ${component.required ? 'required' : ''} />
+                    <input id='${component.title}' name='${component.title.toLowerCase().replace(/\s+/g, '')}' class='custom-input' type='tel' pattern="[6-9]{1}[0-9]{9}" maxlength="10" placeholder='${component.placeholder || ''}' ${component.required ? 'required' : ''} oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
                     <div class="error-message">Please enter a valid 10-digit phone number.</div>
                 </div>`;
             case 'Number':
@@ -129,7 +155,9 @@ const App = () => {
                           id='dropdown-${component.title}'
                           onchange="(e) => e.target.classList.add('text-black', 'font-bold')"
                           defaultValue=''
+                          name="${component.title.toLowerCase().replace(/\s+/g, '')}"
                           ${component.required ? 'required' : ''}
+                          class='dp-selection'
                         >
                           <option value='' disabled selected >${component.placeholder || ''}</option>
                           ${component.options.map((option, idx) => `<option key='${idx}' class="selectedopt" name='${component.title.toLowerCase().replace(/\s+/g, '')}' value='${option}'>${option}</option>`).join('')}
@@ -140,15 +168,15 @@ const App = () => {
                       </div>
                   </div>`;
               case 'Checkbox':
-                  return `<div class='simple-container' key='${index}'>
+                  return `<div class='simple-container checkbox ${component.required ? 'required' : ''}' key='${index}'>
                     <label class='custom-label'>${component.title}</label>
                     ${component.options.map((option, idx) => `<div class='checkbox-container' key='${idx}'>
                       <input 
                           type='checkbox' 
                           id='checkbox-${component.title}-${idx}' 
-                          name='${component.title.toLowerCase().replace(/\s+/g, '')}' 
+                          name='${component.title.toLowerCase().replace(/\s+/g, '')}-${index}' 
                           value='${option}' 
-                          ${component.required ? 'required' : ''} 
+                           
                           class='hide' 
                       />
                       <label for='checkbox-${component.title}-${idx}' class='checkbox-label'>
@@ -175,13 +203,29 @@ const App = () => {
     }).join('\n');
 
     const scriptVal = isOtpRequired ? `<script>
-
+        document.querySelectorAll('.dp-selection').forEach(input => {
+            input.addEventListener('change', function() {
+            this.classList.add('text-black', 'font-bold');
+            });
+        });
+        const containerDiv = document.querySelector('.checkbox');
+        
         function validateForm() {
             const form = document.getElementById('customForm');
             const requiredFields = form.querySelectorAll('[required]');
             const submitButton = document.getElementById('submit-otp');
 
             let isFormValid = true;
+
+            if(containerDiv && containerDiv.classList.contains('required')){   
+                const checkboxes = document.querySelectorAll('.checkbox input[type="checkbox"]');
+                if(Array.from(checkboxes).some(checkbox => checkbox.checked)){
+                    isFormValid = true;
+                }
+                else{
+                    isFormValid = false;
+                }
+            }
 
             requiredFields.forEach(field => {
                 if (!field.checkValidity()) {
@@ -237,7 +281,7 @@ const App = () => {
         }
         toggleLoader(true);
         try {
-            const generateOtpResponse = await fetch('https://betaapi.testbook.com/api/v2/blog-otp?mobile='+firstMobile, {
+            const generateOtpResponse = await fetch('https://api.testbook.com/api/v2/blog-otp?mobile='+firstMobile, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -255,7 +299,8 @@ const App = () => {
                 "&nbsp;" +editIcon+"Edit</span></p><p class='otpHeader'>Enter One Time Password (OTP)</p><div class='otpStylesInputs'><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /><input class='inputStyle' type='number' maxlength='1' /></div><div class='otpResendWrapper'>Didn’t recieved OTP ?<a id='resendOtp' class='resendTimer'>Resend</a><span id='resendTimer'>Resend in 10s</span></div><div class='button-container'><input id='submitOtp' class='custom-submit' type='submit' value='Submit'/></div><p id='otp-error' class='otpErrorMessage hide-text'>Incorrect OTP. Please try again.</p></div></div>";
 
                 document.getElementById('editBtn').addEventListener('click', (event) => {
-                    window.location.reload()
+                    document.getElementById("customForm").style.display = 'block';
+                    document.getElementById("otpForm").style.display = 'none';
                 })
 
                 // Function to start the resend OTP timer
@@ -287,7 +332,7 @@ const App = () => {
                     startResendTimer(); // Disable the button and start the timer again
 
                     // Your logic to resend the OTP goes here
-                    const generateOtpResponse = await fetch('https://betaapi.testbook.com/api/v2/blog-otp?mobile='+firstMobile, {
+                    const generateOtpResponse = await fetch('https://api.testbook.com/api/v2/blog-otp?mobile='+firstMobile, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -327,7 +372,7 @@ const App = () => {
                     const formData = new FormData(formData1);
 
                     try {
-                        const verifyOtpResponse = await fetch('https://betaapi.testbook.com/api/v2/blog-otp/validate?mobile='+firstMobile+'&otp='+otpNumber, {
+                        const verifyOtpResponse = await fetch('https://api.testbook.com/api/v2/blog-otp/validate?mobile='+firstMobile+'&otp='+otpNumber, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -343,6 +388,7 @@ const App = () => {
                                 };
                                 const urlParams = new URLSearchParams(window.location.search);
                                 const utmParams = {};
+                                data.data.unshift({ 'key': 'uniqueId', 'value': "${uniqueId}" });
                                 urlParams.forEach((value, key) => {
                                     if (key.startsWith('utm_')) {
                                         utmParams[key] = value;
@@ -351,14 +397,12 @@ const App = () => {
                                 formData.forEach((value, key) => {
                                     const existingItem = data.data.find(item => item.key === key);
                                     if (existingItem) {
-                                        existingItem.value += ',' + value;
+                                            existingItem.value += ',' + value;
                                     } else {
-                                        data.data.push({
-                                            'key': key,
-                                            'value': value
-                                        });
+                                        data.data.push({ 'key': key, 'value': value });
                                     }
                                 });
+
                                 for (const [key, value] of Object.entries(utmParams)) {
                                     data.data.push({
                                         'key': key,
@@ -366,7 +410,7 @@ const App = () => {
                                     });
                                 }
 
-                                const response = await fetch('https://betaapi.testbook.com/api/v2/blog-sheet', {
+                                const response = await fetch('https://api.testbook.com/api/v2/blog-sheet', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json',
@@ -375,7 +419,7 @@ const App = () => {
                                 });
 
                                 // response.ok
-                                if(true){
+                                if(response.ok){
                                     document.getElementById("container").style.display = 'none';
                                     document.getElementById("thanks").classList.remove('hide');
                                 }else{
@@ -406,6 +450,13 @@ const App = () => {
     );
     </script>` :
     `<script>
+        document.querySelectorAll('.dp-selection').forEach(input => {
+            input.addEventListener('change', function() {
+            this.classList.add('text-black', 'font-bold');
+            });
+        });
+
+        const containerDiv = document.querySelector('.checkbox');
 
         function validateForm() {
             const form = document.getElementById('customForm');
@@ -413,6 +464,16 @@ const App = () => {
             const submitButton = document.getElementById('submit-otp');
 
             let isFormValid = true;
+
+            if(containerDiv && containerDiv.classList.contains('required')){   
+                const checkboxes = document.querySelectorAll('.checkbox input[type="checkbox"]');
+                if(Array.from(checkboxes).some(checkbox => checkbox.checked)){
+                    isFormValid = true;
+                }
+                else{
+                    isFormValid = false;
+                }
+            }
 
             requiredFields.forEach(field => {
                 if (!field.checkValidity()) {
@@ -441,7 +502,6 @@ const App = () => {
                 formSubmitBtn.disabled = false; // Re-enable the button once loading is complete
             }
         }
-
 
         document.getElementById('submit-otp').addEventListener('click', async (event) => {
         event.preventDefault(); 
@@ -481,6 +541,8 @@ const App = () => {
             const urlParams = new URLSearchParams(window.location.search);
             const utmParams = {};
 
+            data.data.unshift({ 'key': 'uniqueId', 'value': "${uniqueId}" });
+
             urlParams.forEach((value, key) => {
                 if (key.startsWith('utm_')) {
                     utmParams[key] = value;
@@ -490,7 +552,7 @@ const App = () => {
             formData.forEach((value, key) => {
                 const existingItem = data.data.find(item => item.key === key);
                 if (existingItem) {
-                    existingItem.value += ',' + value;
+                        existingItem.value += ',' + value;
                 } else {
                     data.data.push({ 'key': key, 'value': value });
                 }
@@ -501,7 +563,7 @@ const App = () => {
             }
             toggleLoader( true);
 
-            const response = await fetch('https://betaapi.testbook.com/api/v2/blog-sheet', {
+            const response = await fetch('https://api.testbook.com/api/v2/blog-sheet', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -539,6 +601,7 @@ const App = () => {
                 padding:20px;*/
                 color: #363062;
                 margin: 0;
+                display:block;
             }
             .relative {
                 position: relative;
@@ -676,8 +739,6 @@ const App = () => {
                 border-radius: 16px;
                 background-color: white;
                 appearance: none;
-                color: #7D8592;
-                font-weight: normal;
             }
             select:focus {
               border-color: #00ADE7;
@@ -766,6 +827,7 @@ const App = () => {
             }
             .thanks{
               width:100%;
+              display:block;
             }
             .thank-you-message {
               text-align: center;
@@ -986,6 +1048,39 @@ const App = () => {
                     : 'bg-transparent text-[#363062] border-[#363062] hover:text-[#E9D5CA] hover:bg-[#827397]'
                 }`} onClick={handleWithoutOtp}>Without OTP </button>
           </div>
+          <button className='font-semibold border-2 w-[300px] border-[#363062] p-[10px] text-[#363062] hover:text-[#E9D5CA] hover:bg-[#827397] rounded-lg m-auto ml-[-20px]' 
+          onClick={handleSetUniqueId}>
+            Set Unique Id
+          </button>
+          {uniqueShowPopup && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="relative z-50 bg-white rounded-xl w-[400px] p-6">
+                <h2 className="text-xl font-semibold text-center text-[#000000] mb-4">Set Unique Id</h2>
+                <div className="mb-4">
+                    <label className="block text-[#363062] font-medium mb-1">Title</label>
+                    <input 
+                        className="w-full p-3 border border-gray-300 rounded-lg text-sm text-[#000000] focus:border-[#000000] focus:ring-0" 
+                        type="text"
+                        value={uniqueId}
+                        onChange={(e) => setUniqueId(e.target.value)} 
+                    />
+                </div>
+                <div className="flex justify-end mt-6">
+                    <button 
+                        className="bg-gray-300 text-[#363062] font-semibold px-4 py-2 rounded-lg mr-4" 
+                        onClick={onCloseUnique}
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        className="bg-[#363062] text-white font-semibold px-4 py-2 rounded-lg" 
+                        onClick={handleSave}
+                    >
+                        Save
+                    </button>
+                </div>
+              </div>
+            </div>)}
           <EditableFormHeadingComponent addComponent={addComponent}/>
           <EditableTextComponent addComponent={addComponent} />
           <EditableDateComponent addComponent={addComponent} />
@@ -1077,7 +1172,6 @@ const App = () => {
                 </div>
               </div>
             </div>)}
-
         </div>
         <div className='w-full flex flex-col items-center'>
           <Routes>
