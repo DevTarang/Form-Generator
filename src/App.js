@@ -1061,6 +1061,7 @@ const App = () => {
                     <input 
                         className="w-full p-3 border border-gray-300 rounded-lg text-sm text-[#000000] focus:border-[#000000] focus:ring-0" 
                         type="text"
+                        maxlength="6"
                         value={uniqueId}
                         onChange={(e) => setUniqueId(e.target.value)} 
                     />
