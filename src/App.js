@@ -386,7 +386,7 @@ const App = () => {
                                 const data = {
                                     'data': []
                                 };
-                                const urlParams = new URLSearchParams(window.location.search);
+                                const urlParams = new URLSearchParams(window.parent.location.search);
                                 const utmParams = {};
                                 data.data.unshift({ 'key': 'uniqueId', 'value': "${uniqueId}" });
                                 urlParams.forEach((value, key) => {
@@ -538,7 +538,7 @@ const App = () => {
 
         try {
             const data = { 'data': [] };
-            const urlParams = new URLSearchParams(window.location.search);
+            const urlParams = new URLSearchParams(window.parent.location.search);
             const utmParams = {};
 
             data.data.unshift({ 'key': 'uniqueId', 'value': "${uniqueId}" });
