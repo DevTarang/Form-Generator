@@ -417,6 +417,9 @@ const App = () => {
                                     },
                                     body: JSON.stringify(data)
                                 });
+                                if(data?.data){
+                                    window?.parent?.dataLayer.push({event:'enquiryFormSuccess', data: data?.data});
+                                }
 
                                 // response.ok
                                 if(response.ok){
@@ -570,6 +573,9 @@ const App = () => {
                 },
                 body: JSON.stringify(data)
             });
+            if(data?.data){
+                window?.parent?.dataLayer.push({event:'enquiryFormSuccess', data: data?.data});
+            }
 
             console.log('Response:', response);
             toggleLoader( false);
